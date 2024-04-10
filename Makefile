@@ -557,6 +557,26 @@ RUN python3.11 manage.py collectstatic --noinput --clear
 CMD set -xe; python manage.py migrate --noinput; gunicorn backend.wsgi:application
 endef
 
+define DOCKERCOMPOSE
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: wagtail
+      POSTGRES_PASSWORD: wagtail
+      POSTGRES_DB: wagtail_db
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+endef
+
 define INTERNAL_IPS
 INTERNAL_IPS = ["127.0.0.1",]
 endef
@@ -1653,6 +1673,7 @@ export CONTACT_PAGE_TEMPLATE
 export CONTACT_PAGE_LANDING
 export CONTACT_PAGE_TEST
 export DOCKERFILE
+export DOCKERCOMPOSE
 export ESLINTRC
 export FAVICON_TEMPLATE
 export FRONTEND_APP
@@ -2282,6 +2303,7 @@ wagtail-start-default:
 
 wagtail-init-default: db-init wagtail-install wagtail-start
 	@echo "$$DOCKERFILE" > Dockerfile
+	@echo "$$DOCKERCOMPOSE" > compose.yml
 	export SETTINGS=backend/settings/base.py DEV_SETTINGS=backend/settings/dev.py; \
 		$(MAKE) django-settings
 	export SETTINGS=backend/settings/base.py; \
