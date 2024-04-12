@@ -554,27 +554,10 @@ COPY --chown=wagtail:wagtail . .
 USER wagtail
 RUN cd frontend; npm-20 install; npm-20 run build
 RUN python3.11 manage.py collectstatic --noinput --clear
-CMD set -xe; python manage.py migrate --noinput; gunicorn backend.wsgi:application
+CMD set -xe; python3.11 manage.py migrate --noinput; gunicorn backend.wsgi:application
 endef
 
 define DOCKERCOMPOSE
-services:
-  db:
-    image: postgres:14
-    environment:
-      POSTGRES_USER: wagtail
-      POSTGRES_PASSWORD: wagtail
-      POSTGRES_DB: wagtail_db
-
-  web:
-    build: .
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/app
-    ports:
-      - "8000:8000"
-    depends_on:
-      - db
 endef
 
 define INTERNAL_IPS
@@ -2303,7 +2286,7 @@ wagtail-start-default:
 
 wagtail-init-default: db-init wagtail-install wagtail-start
 	@echo "$$DOCKERFILE" > Dockerfile
-	@echo "$$DOCKERCOMPOSE" > compose.yml
+	# @echo "$$DOCKERCOMPOSE" > compose.yml
 	export SETTINGS=backend/settings/base.py DEV_SETTINGS=backend/settings/dev.py; \
 		$(MAKE) django-settings
 	export SETTINGS=backend/settings/base.py; \
