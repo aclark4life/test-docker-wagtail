@@ -1724,10 +1724,10 @@ else
 endif
 
 docker-build-default:
-	docker build -t $(PROJECT_NAME) .
+	podman build -t $(PROJECT_NAME) .
 
 docker-serve-default:
-	docker run -p 8000:8000 $(PROJECT_NAME)
+	podman run -p 8000:8000 $(PROJECT_NAME)
 
 eb-check-env-default:  # https://stackoverflow.com/a/4731504/185820
 ifndef SSH_KEY
