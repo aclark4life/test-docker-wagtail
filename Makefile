@@ -2351,7 +2351,6 @@ wagtail-install-default:
         django-recurrence \
         django-recaptcha \
         django-registration \
-        django-rest-auth \
         django-richtextfield \
         django-sendgrid-v5 \
         django-social-share \
@@ -2361,7 +2360,6 @@ wagtail-install-default:
 		django-widget-tweaks \
         dj-database-url \
         dj-stripe \
-        dj-rest-auth \
         enmerkar \
         gunicorn \
         html2docx \
